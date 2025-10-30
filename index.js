@@ -26,12 +26,12 @@ app.use(cors());
 app.use(express.json());
 
 if (!process.env.PAYMENT_GATEWAY_KEY) {
-  console.warn("⚠️ PAYMENT_GATEWAY_KEY is not set in .env");
+  console.warn(" PAYMENT_GATEWAY_KEY is not set in .env");
 }
 const stripe = new Stripe(process.env.PAYMENT_GATEWAY_KEY);
 
 if (!process.env.DB_USER || !process.env.DB_PASS || !process.env.DB_NAME) {
-  console.error("❌ DB_USER / DB_PASS / DB_NAME must be set in .env");
+  console.error(" DB_USER / DB_PASS / DB_NAME must be set in .env");
   process.exit(1);
 }
 
@@ -48,7 +48,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    console.log("✅ Connected to MongoDB");
+    console.log(" Connected to MongoDB");
 
     const db = client.db(process.env.DB_NAME);
     const usersCollection = db.collection("users");
@@ -104,7 +104,7 @@ async function run() {
         if (result.upsertedCount === 1) {
           return res
             .status(201)
-            .json({ success: true, message: "✅ User created" });
+            .json({ success: true, message: " User created" });
         }
 
         return res
@@ -195,7 +195,7 @@ async function run() {
           .status(200)
           .json({ success: true, message: `User role updated to '${role}'.` });
       } catch (error) {
-        console.error("❌ Error updating user role:", error);
+        console.error("Error updating user role:", error);
         res.status(500).json({
           success: false,
           message: "Server error while updating user role.",
