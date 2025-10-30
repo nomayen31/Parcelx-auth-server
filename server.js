@@ -741,11 +741,7 @@ async function run() {
     app.get("/", (_req, res) => res.send("🚀 ParcelX API is running..."));
 
 
-    if (process.env.NODE_ENV !== "production") {
-      app.listen(port, () =>
-        console.log(`🌍 Server listening locally at http://localhost:${port}`)
-      );
-    }
+  
     process.on("SIGINT", async () => {
       console.log("\n🛑 Shutting down...");
       await client.close();
