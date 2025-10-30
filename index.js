@@ -107,12 +107,10 @@ async function run() {
             .json({ success: true, message: " User created" });
         }
 
-        return res
-          .status(200)
-          .json({
-            success: true,
-            message: "ℹ️ User exists — lastLogin refreshed",
-          });
+        return res.status(200).json({
+          success: true,
+          message: "ℹ️ User exists — lastLogin refreshed",
+        });
       } catch (err) {
         if (err?.code === 11000) {
           return res
@@ -268,13 +266,11 @@ async function run() {
           .json({ success: true, total: parcels.length, data: parcels });
       } catch (error) {
         console.error("Error fetching parcels:", error);
-        res
-          .status(500)
-          .json({
-            success: false,
-            message: "Failed to fetch parcels",
-            error: error.message,
-          });
+        res.status(500).json({
+          success: false,
+          message: "Failed to fetch parcels",
+          error: error.message,
+        });
       }
     });
 
@@ -290,22 +286,18 @@ async function run() {
             .json({ success: false, message: "Parcel not found" });
         }
 
-        res
-          .status(200)
-          .json({
-            success: true,
-            message: "Parcel retrieved successfully",
-            data: parcel,
-          });
+        res.status(200).json({
+          success: true,
+          message: "Parcel retrieved successfully",
+          data: parcel,
+        });
       } catch (error) {
         console.error("Error fetching parcel:", error);
-        res
-          .status(500)
-          .json({
-            success: false,
-            message: "Server error while fetching parcel",
-            error: error.message,
-          });
+        res.status(500).json({
+          success: false,
+          message: "Server error while fetching parcel",
+          error: error.message,
+        });
       }
     });
 
@@ -320,22 +312,18 @@ async function run() {
           updatedAt: new Date(),
         };
         const result = await parcelsCollection.insertOne(newParcel);
-        res
-          .status(201)
-          .json({
-            success: true,
-            message: "Parcel added successfully",
-            data: result,
-          });
+        res.status(201).json({
+          success: true,
+          message: "Parcel added successfully",
+          data: result,
+        });
       } catch (error) {
         console.error("Error inserting parcel:", error);
-        res
-          .status(500)
-          .json({
-            success: false,
-            message: "Failed to add parcel",
-            error: error.message,
-          });
+        res.status(500).json({
+          success: false,
+          message: "Failed to add parcel",
+          error: error.message,
+        });
       }
     });
 
@@ -365,12 +353,10 @@ async function run() {
       try {
         const { parcelId, paymentIntentId } = req.body;
         if (!parcelId || !paymentIntentId) {
-          return res
-            .status(400)
-            .json({
-              success: false,
-              message: "parcelId and paymentIntentId are required",
-            });
+          return res.status(400).json({
+            success: false,
+            message: "parcelId and paymentIntentId are required",
+          });
         }
 
         const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
@@ -391,12 +377,10 @@ async function run() {
           $set: { paymentStatus: "Paid", updatedAt: new Date() },
         });
 
-        res
-          .status(200)
-          .json({
-            success: true,
-            message: "Payment recorded and parcel marked Paid",
-          });
+        res.status(200).json({
+          success: true,
+          message: "Payment recorded and parcel marked Paid",
+        });
       } catch (err) {
         console.error("payments/confirm error:", err);
         res.status(500).json({ success: false, message: err.message });
@@ -407,13 +391,11 @@ async function run() {
       try {
         const rider = req.body;
         const result = await ridersCollection.insertOne(rider);
-        res
-          .status(201)
-          .json({
-            success: true,
-            message: "Rider added successfully",
-            insertedId: result.insertedId,
-          });
+        res.status(201).json({
+          success: true,
+          message: "Rider added successfully",
+          insertedId: result.insertedId,
+        });
       } catch (error) {
         console.error("Error adding rider:", error);
         res
@@ -490,8 +472,8 @@ async function run() {
             status === "active"
               ? "Rider activated and role updated to rider."
               : status === "pending"
-                ? "Rider deactivated and moved to pending list."
-                : "Rider rejected and role reverted to user.",
+              ? "Rider deactivated and moved to pending list."
+              : "Rider rejected and role reverted to user.",
         });
       } catch (error) {
         console.error("❌ Rider update error:", error);
@@ -639,12 +621,18 @@ async function run() {
         const { status } = req.body;
 
         if (!ObjectId.isValid(id)) {
-          return res.status(400).send({ success: false, message: "Invalid parcel ID" });
+          return res
+            .status(400)
+            .send({ success: false, message: "Invalid parcel ID" });
         }
 
-        const parcel = await parcelsCollection.findOne({ _id: new ObjectId(id) });
+        const parcel = await parcelsCollection.findOne({
+          _id: new ObjectId(id),
+        });
         if (!parcel) {
-          return res.status(404).send({ success: false, message: "Parcel not found" });
+          return res
+            .status(404)
+            .send({ success: false, message: "Parcel not found" });
         }
 
         await parcelsCollection.updateOne(
@@ -654,7 +642,8 @@ async function run() {
 
         if (status.toLowerCase() === "delivered") {
           const isSameDistrict =
-            parcel.riderDistrict?.toLowerCase() === parcel.receiverDistrict?.toLowerCase();
+            parcel.riderDistrict?.toLowerCase() ===
+            parcel.receiverDistrict?.toLowerCase();
 
           const percentage = isSameDistrict ? 0.3 : 0.8;
           const riderEarning = (parcel.deliveryCost || 0) * percentage;
@@ -665,7 +654,10 @@ async function run() {
           );
         }
 
-        res.send({ success: true, message: "Parcel status updated successfully" });
+        res.send({
+          success: true,
+          message: "Parcel status updated successfully",
+        });
       } catch (err) {
         console.error("Error updating parcel status:", err);
         res.status(500).send({ success: false, message: err.message });
@@ -676,7 +668,9 @@ async function run() {
       try {
         const { email } = req.query;
         if (!email) {
-          return res.status(400).send({ success: false, message: "Email is required" });
+          return res
+            .status(400)
+            .send({ success: false, message: "Email is required" });
         }
 
         const parcels = await parcelsCollection
@@ -698,12 +692,16 @@ async function run() {
       try {
         const { trackingId } = req.params;
         if (!trackingId) {
-          return res.status(400).json({ success: false, message: "Tracking ID is required" });
+          return res
+            .status(400)
+            .json({ success: false, message: "Tracking ID is required" });
         }
 
         const parcel = await parcelsCollection.findOne({ trackingId });
         if (!parcel) {
-          return res.status(404).json({ success: false, message: "Parcel not found" });
+          return res
+            .status(404)
+            .json({ success: false, message: "Parcel not found" });
         }
 
         const history = await trackingCollection
@@ -738,10 +736,6 @@ async function run() {
       }
     });
 
-    app.get("/", (_req, res) => res.send("🚀 ParcelX API is running..."));
-
-
-  
     process.on("SIGINT", async () => {
       console.log("\n🛑 Shutting down...");
       await client.close();
@@ -755,12 +749,11 @@ async function run() {
 
 run().catch(console.dir);
 
-// ✅ Local dev only (Vercel will handle requests automatically)
-if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () =>
-    console.log(`🌍 Server running locally at http://localhost:${port}`)
-  );
-}
+app.get("/", (req, res) => res.send("🚀 ParcelX API is running..."));
 
-// ✅ Export for Vercel serverless function
+app.listen(port, () =>
+  console.log(`🌍 Server running locally at http://localhost:${port}`)
+);
+
+
 export default app;
