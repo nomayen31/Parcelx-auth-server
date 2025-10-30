@@ -6,15 +6,17 @@ import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
 import Stripe from "stripe";
 import admin from "firebase-admin";
 import verifyToken from "./verifyToken.js";
+import firebase from './convertKey.js';
 
 dotenv.config();
 
 const serviceAccount = JSON.parse(
   await fs.promises.readFile(
-    new URL("./firebase-admin-key.json", import.meta.url),
+    new URL(firebase),
     "utf-8"
   )
 );
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
