@@ -736,11 +736,6 @@ async function run() {
       }
     });
 
-    process.on("SIGINT", async () => {
-      console.log("\n🛑 Shutting down...");
-      await client.close();
-      process.exit(0);
-    });
   } catch (error) {
     console.error("MongoDB Connection Error:", error);
     process.exit(1);
