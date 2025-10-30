@@ -1,4 +1,3 @@
-// index.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -6,7 +5,7 @@ import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
 import Stripe from "stripe";
 import admin from "firebase-admin";
 import verifyToken from "./verifyToken.js";
-const firebaseBase64 = require("./convertKey.js");
+import firebaseBase64 from "./convertKey.js"; // ✅ ES module import
 
 dotenv.config();
 
@@ -17,6 +16,7 @@ if (!admin.apps.length) {
     credential: admin.credential.cert(decodedKey),
   });
 }
+
 
 // --- Express app
 const app = express();
