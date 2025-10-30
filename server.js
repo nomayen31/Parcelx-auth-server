@@ -754,3 +754,13 @@ async function run() {
 }
 
 run().catch(console.dir);
+
+// ✅ Local dev only (Vercel will handle requests automatically)
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () =>
+    console.log(`🌍 Server running locally at http://localhost:${port}`)
+  );
+}
+
+// ✅ Export for Vercel serverless function
+export default app;
