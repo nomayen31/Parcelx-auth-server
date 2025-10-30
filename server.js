@@ -490,8 +490,8 @@ async function run() {
             status === "active"
               ? "Rider activated and role updated to rider."
               : status === "pending"
-              ? "Rider deactivated and moved to pending list."
-              : "Rider rejected and role reverted to user.",
+                ? "Rider deactivated and moved to pending list."
+                : "Rider rejected and role reverted to user.",
         });
       } catch (error) {
         console.error("❌ Rider update error:", error);
@@ -740,10 +740,12 @@ async function run() {
 
     app.get("/", (_req, res) => res.send("🚀 ParcelX API is running..."));
 
-    app.listen(port, () =>
-      console.log(`🌍 Server listening at http://localhost:${port}`)
-    );
 
+    if (process.env.NODE_ENV !== "production") {
+      app.listen(port, () =>
+        console.log(`🌍 Server listening locally at http://localhost:${port}`)
+      );
+    }
     process.on("SIGINT", async () => {
       console.log("\n🛑 Shutting down...");
       await client.close();
