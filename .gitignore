@@ -1,0 +1,33 @@
+# ----------------------------------------------------------------------
+# CRITICAL SECRETS & ENVIRONMENT
+# IGNORE THESE TO PREVENT ACCIDENTAL COMMITTING OF SENSITIVE DATA!
+# ----------------------------------------------------------------------
+.env
+firebase-admin-key.json
+
+# ----------------------------------------------------------------------
+# DEPENDENCIES AND BUILD OUTPUT
+# ----------------------------------------------------------------------
+/node_modules
+/dist
+/build
+/logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ----------------------------------------------------------------------
+# OS & EDITOR FILES
+# ----------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.cache/
+.tmp/
+.vscode/
+.idea/
+*.swpf i r e b a s e - a d m i n - k e y . j s o n 
+ 
+ f i r e b a s e - a d m i n - k e y . j s o n 
+ 
+ 
