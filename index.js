@@ -9,6 +9,23 @@ import firebaseBase64 from "./convertKey.js"; // ✅ ES module import
 
 dotenv.config();
 
+const allowedOrigins = [
+  "https://parcelx-client.vercel.app", // Production
+  "http://localhost:5173",             // Local Dev
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed for this origin"));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
 // --- Initialize Firebase Admin (decode base64)
 const decodedKey = JSON.parse(Buffer.from(firebaseBase64, "base64").toString("utf8"));
 if (!admin.apps.length) {
