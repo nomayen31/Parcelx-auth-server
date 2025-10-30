@@ -19,8 +19,7 @@
     "firebase-admin": "^13.5.0",
     "mongodb": "^6.20.0",
     "nodemailer": "^7.0.10",
-    "stripe": "^19.1.0",
-    "vercel": "^48.6.7"
+    "stripe": "^19.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

@@ -8,5 +8,4 @@ const jsonPath = path.join(__dirname, "firebase-admin-key.json");
 const key = readFileSync(jsonPath, "utf8");
 const base64 = Buffer.from(key).toString("base64");
 
-// ✅ Export the base64 string as the default export
 export default base64;
