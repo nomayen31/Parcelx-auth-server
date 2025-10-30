@@ -6,7 +6,7 @@ import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
 import Stripe from "stripe";
 import admin from "firebase-admin";
 import verifyToken from "./verifyToken.js";
-import firebaseBase64 from "./convertKey.js";
+const firebaseBase64 = require("./convertKey.js");
 
 dotenv.config();
 
