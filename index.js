@@ -34,14 +34,12 @@ if (!admin.apps.length) {
   });
 }
 
-
 // --- Express app
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions)); // <-- Apply custom CORS! ✔️
 app.use(express.json());
 
 const port = process.env.PORT || 5000;
-
 // --- Stripe (warning if missing)
 if (!process.env.PAYMENT_GATEWAY_KEY) {
   console.warn(" PAYMENT_GATEWAY_KEY is not set in .env");
