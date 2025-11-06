@@ -51,7 +51,7 @@ app.use(cors(corsOptions)); // ✅ Applied CORS safely
 app.use(express.json());
 
 // ✅ Ensure preflight OPTIONS requests handled globally
-app.options("*", cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 const port = process.env.PORT || 5000;
 
