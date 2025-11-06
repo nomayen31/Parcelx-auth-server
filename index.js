@@ -5,13 +5,14 @@ import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
 import Stripe from "stripe";
 import admin from "firebase-admin";
 import verifyToken from "./verifyToken.js";
-import firebaseBase64 from "./convertKey.js"; // ✅ ES module import
+// import firebaseBase64 from "./convertKey.js"; 
+
 
 dotenv.config();
+const firebaseBase64 =  process.env.FB_SERVICE_KEY;
 
 const allowedOrigins = [
-  "https://parcelx-client.vercel.app", // Production
-  "http://localhost:5173",             // Local Dev
+"*"
 ];
 
 const corsOptions = {
@@ -94,6 +95,7 @@ async function initDbOnce() {
 
     dbInitialized = true;
     console.log("✅ MongoDB indexes ensured");
+
   } catch (err) {
     console.error("MongoDB Connection Error during init:", err);
     // keep same behavior as original where connection errors were terminal:
@@ -106,7 +108,7 @@ initDbOnce().catch((e) => {
   console.error("Init DB failed:", e);
   process.exit(1);
 });
-
+  
 // ---------------------------
 // All routes (kept same functionality as original)
 // ---------------------------
@@ -693,6 +695,10 @@ app.get("/payments", async (req, res) => {
 
 // Fallback root
 app.get("/", (req, res) => res.send("🚀 ParcelX API is running..."));
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
 
 // Export app for Vercel (do not call app.listen)
 export default app;
