@@ -7,17 +7,24 @@ import admin from "firebase-admin";
 import verifyToken from "./verifyToken.js";
 // import firebaseBase64 from "./convertKey.js"; 
 
-
 dotenv.config();
-const firebaseBase64 =  process.env.FB_SERVICE_KEY;
+const firebaseBase64 = process.env.FB_SERVICE_KEY;
 
+// ✅ Read allowed origins from .env OR fallback
 const allowedOrigins = [
-"*"
+  process.env.CLIENT_URL || "https://parcelx-client.vercel.app",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
 ];
 
+// ✅ Safer and dynamic CORS setup
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (e.g. Postman or server-to-server)
+    if (!origin) return callback(null, true);
+
+    const cleanOrigin = origin.replace(/\/$/, ""); // remove trailing slash if any
+    if (allowedOrigins.some((allowed) => cleanOrigin === allowed)) {
       callback(null, true);
     } else {
       console.warn("❌ CORS blocked for origin:", origin);
@@ -40,23 +47,27 @@ if (!admin.apps.length) {
 
 // --- Express app
 const app = express();
-app.use(cors(corsOptions)); // <-- Apply custom CORS! ✔️
+app.use(cors(corsOptions)); // ✅ Applied CORS safely
 app.use(express.json());
 
+// ✅ Ensure preflight OPTIONS requests handled globally
+app.options("*", cors(corsOptions));
+
 const port = process.env.PORT || 5000;
-// --- Stripe (warning if missing)
+
+// --- Stripe setup
 if (!process.env.PAYMENT_GATEWAY_KEY) {
-  console.warn(" PAYMENT_GATEWAY_KEY is not set in .env");
+  console.warn("⚠️ PAYMENT_GATEWAY_KEY is not set in .env");
 }
 const stripe = new Stripe(process.env.PAYMENT_GATEWAY_KEY);
 
-// --- Validate DB envs (same behaviour as your original code)
+// --- Validate DB envs
 if (!process.env.DB_USER || !process.env.DB_PASS || !process.env.DB_NAME) {
-  console.error(" DB_USER / DB_PASS / DB_NAME must be set in .env");
+  console.error("❌ DB_USER / DB_PASS / DB_NAME must be set in .env");
   process.exit(1);
 }
 
-// --- MongoDB connection (cached for serverless)
+// --- MongoDB connection
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.8k7klrr.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`;
 let cachedClient = null;
 let cachedDb = null;
@@ -79,7 +90,7 @@ async function connectDB() {
   return { client, db };
 }
 
-// --- One-time DB setup: indexes and such
+// --- One-time DB setup
 let dbInitialized = false;
 async function initDbOnce() {
   if (dbInitialized) return;
@@ -98,20 +109,16 @@ async function initDbOnce() {
 
     dbInitialized = true;
     console.log("✅ MongoDB indexes ensured");
-
   } catch (err) {
     console.error("MongoDB Connection Error during init:", err);
-    // keep same behavior as original where connection errors were terminal:
     process.exit(1);
   }
 }
 
-// initialize DB once at module load (helps cold-start)
 initDbOnce().catch((e) => {
   console.error("Init DB failed:", e);
   process.exit(1);
 });
-  
 // ---------------------------
 // All routes (kept same functionality as original)
 // ---------------------------
